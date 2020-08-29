@@ -6,6 +6,10 @@
 
 module.exports = {
   /* Your site config here */
+  siteMetadata: {
+    title: `Xcode Releases`,
+    description: `More than you ever wanted to know™`,
+  },
   plugins: [
     `gatsby-transformer-json`,
     {
