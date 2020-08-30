@@ -1,23 +1,13 @@
 import React from "react"
 import "../styles/styles.css"
-import { graphql, Link } from "gatsby"
+import Header from "../components/Header"
+import Table from "../components/Table"
 
-export default function Home({ data }) {
+export default function Home() {
   return (
     <div>
-      <h1>{data.site.siteMetadata.title}</h1>
-      <h2>{data.site.siteMetadata.description}</h2>
+      <Header />
+      <Table />
     </div>
   )
 }
-
-export const query = graphql`
-  query MyQuery {
-    site {
-      siteMetadata {
-        title
-        description
-      }
-    }
-  }
-`
