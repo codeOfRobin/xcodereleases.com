@@ -45,6 +45,7 @@ const XcodeTableRender = ({ allReleasesJson }) => {
       <tbody>
         <tr>
           <th>Version</th>
+          <th>Release</th>
         </tr>
         {allReleasesJson.edges.map(release => {
           return <XcodeTableRow data={release} />

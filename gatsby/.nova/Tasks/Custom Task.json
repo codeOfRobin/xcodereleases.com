@@ -1,0 +1,10 @@
+{
+  "actions" : {
+    "run" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/sh\ngatsby develop"
+    }
+  },
+  "identifier" : "48AAEDA0-9137-4B37-AF90-FD1CE0FF9683",
+  "openLogOnRun" : "fail"
+}
