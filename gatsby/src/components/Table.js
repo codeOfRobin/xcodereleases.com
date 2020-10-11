@@ -28,11 +28,43 @@ const releaseJSONQuery = graphql`
   }
 `
 
+function releaseTypeInfoFor({ node }) {
+  const { version } = node
+  console.log(version)
+  if (version.release.beta) {
+    return "Beta"
+  } else if (version.release.gmSeed) {
+    return "GM Seed"
+  } else if (version.release.dp) {
+    return "Developer Preview"
+  } else {
+    return "GM"
+  }
+}
+
+function releaseVersionNumberFor({ node }, releaseType) {
+  const { version } = node
+  console.log(releaseType)
+  switch (releaseType) {
+    case "Beta":
+      return version.release.beta
+    case "GM Seed":
+      return version.release.gmSeed
+    case "Developer Preview":
+      return version.release.dp
+    default:
+      return undefined
+  }
+}
+
 const XcodeTableRow = ({ data }) => {
   return (
-    <tr className="xcode">
+    <tr className={`xcode ${data.node.version.release.gm === undefined ? 'beta' : 'gm'}`}>
       <td>
         {data.node.name} {data.node.version.number}
+      </td>
+      <td>
+      {releaseTypeInfoFor(data)} {releaseVersionNumberFor(data, releaseTypeInfoFor(data))}
       </td>
     </tr>
   )
