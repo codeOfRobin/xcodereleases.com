@@ -5,7 +5,11 @@ import Table from "../components/Table"
 
 export default function Home() {
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      flexDirection:"column"
+    }}>
       <Header />
       <Table />
     </div>

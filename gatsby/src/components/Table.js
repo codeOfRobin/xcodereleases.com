@@ -11,15 +11,38 @@ const releaseJSONQuery = graphql`
           name
           version {
             number
+            build
             release {
               beta
               gm
             }
           }
+          date {
+            day
+            month
+            year
+          }
           requires
           links {
             download {
               url
+            }
+            notes{
+              url
+            }
+          }
+          sdks {
+            iOS {
+              build
+            }
+            macOS {
+              build
+            }
+            tvOS {
+              build
+            }
+            watchOS {
+              build
             }
           }
         }
@@ -30,7 +53,6 @@ const releaseJSONQuery = graphql`
 
 function releaseTypeInfoFor({ node }) {
   const { version } = node
-  console.log(version)
   if (version.release.beta) {
     return "Beta"
   } else if (version.release.gmSeed) {
@@ -44,7 +66,6 @@ function releaseTypeInfoFor({ node }) {
 
 function releaseVersionNumberFor({ node }, releaseType) {
   const { version } = node
-  console.log(releaseType)
   switch (releaseType) {
     case "Beta":
       return version.release.beta
@@ -58,28 +79,81 @@ function releaseVersionNumberFor({ node }, releaseType) {
 }
 
 const XcodeTableRow = ({ data }) => {
+  const { node } = data
   return (
     <tr className={`xcode ${data.node.version.release.gm === undefined ? 'beta' : 'gm'}`}>
       <td>
-        {data.node.name} {data.node.version.number}
+        {node.name} {node.version.number}
       </td>
       <td>
       {releaseTypeInfoFor(data)} {releaseVersionNumberFor(data, releaseTypeInfoFor(data))}
+      </td>
+      <td>
+        {node.version.build}
+      </td>
+      <td>
+        {node.date.day}/{node.date.month}/{node.date.year}
+      </td>
+      <td>
+        {node.requires}
+      </td>
+      <td>
+        <ul>
+          {node.sdks.macOS.map(({ build}) => {
+            return <li> {build}</li>
+          })}
+        </ul>
+      </td>
+      <td>
+        <ul>
+          {node.sdks.iOS.map(({ build}) => {
+            return <li> {build}</li>
+          })}
+        </ul>
+      </td>
+      <td>
+        <ul>
+          {node.sdks.watchOS.map(({ build}) => {
+            return <li> {build}</li>
+          })}
+        </ul>
+      </td>
+      <td>
+        <ul>
+          {node.sdks.tvOS.map(({ build}) => {
+            return <li> {build}</li>
+          })}
+        </ul>
+      </td>
+      <td>
+        <a href={node.links.download.url}>Downloads</a>
+      </td>
+      <td>
+        <a href={node.links.notes.url}>Release Notes</a>
       </td>
     </tr>
   )
 }
 
 const XcodeTableRender = ({ allReleasesJson }) => {
-  console.log(allReleasesJson)
+  console.log(allReleasesJson.edges.slice(0,4))
   return (
     <table id="xcodes">
       <tbody>
         <tr>
           <th>Version</th>
           <th>Release</th>
+          <th>Build</th>
+          <th>Released</th>
+          <th>Requires</th>
+          <th>macOS SDKs</th>
+          <th>iOS SDKs</th>
+          <th>watchOS SDKs</th>
+          <th>tvOS SDKs</th>
+          <th>Download</th>
+          <th>Release Notes</th>
         </tr>
-        {allReleasesJson.edges.map(release => {
+        {allReleasesJson.edges.slice(0,9).map(release => {
           return <XcodeTableRow data={release} />
         })}
       </tbody>
@@ -88,7 +162,12 @@ const XcodeTableRender = ({ allReleasesJson }) => {
 }
 
 const XcodeTable = () => {
-  return <StaticQuery query={releaseJSONQuery} render={XcodeTableRender} />
+  return (
+    <div style={{
+      width: "75%"
+    }}>
+    <StaticQuery query={releaseJSONQuery} render={XcodeTableRender} />
+  </div>)
 }
 
 export default XcodeTable
