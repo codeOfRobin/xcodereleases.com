@@ -1,6 +1,6 @@
-import React from "react"
 import { StaticQuery, graphql } from "gatsby"
 import MarkdownRenderer from "./MarkdownRenderer"
+import React from 'react';
 
 const TitleAndDescription = ({ data, text }) => {
   const title = data.site.siteMetadata.title

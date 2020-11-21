@@ -78,6 +78,18 @@ function releaseVersionNumberFor({ node }, releaseType) {
   }
 }
 
+const SDKList = ({ sdks }) => {
+  return (
+    <ul style={{
+      listStyle:"none"
+    }}>
+      {sdks.map(({ build }) => {
+        return <li> {build}</li>
+      })}
+    </ul>
+  )
+}
+
 const XcodeTableRow = ({ data }) => {
   const { node } = data
   return (
@@ -98,32 +110,16 @@ const XcodeTableRow = ({ data }) => {
         {node.requires}
       </td>
       <td>
-        <ul>
-          {node.sdks.macOS.map(({ build}) => {
-            return <li> {build}</li>
-          })}
-        </ul>
+        <SDKList sdks={ node.sdks.macOS }/>
       </td>
       <td>
-        <ul>
-          {node.sdks.iOS.map(({ build}) => {
-            return <li> {build}</li>
-          })}
-        </ul>
+       <SDKList sdks={ node.sdks.iOS }/>
       </td>
       <td>
-        <ul>
-          {node.sdks.watchOS.map(({ build}) => {
-            return <li> {build}</li>
-          })}
-        </ul>
+        <SDKList sdks={ node.sdks.watchOS }/>
       </td>
       <td>
-        <ul>
-          {node.sdks.tvOS.map(({ build}) => {
-            return <li> {build}</li>
-          })}
-        </ul>
+        <SDKList sdks={ node.sdks.tvOS }/>
       </td>
       <td>
         <a href={node.links.download.url}>Downloads</a>
@@ -136,22 +132,33 @@ const XcodeTableRow = ({ data }) => {
 }
 
 const XcodeTableRender = ({ allReleasesJson }) => {
-  console.log(allReleasesJson.edges.slice(0,4))
+  const headings = [
+    "Version",
+    "Release",
+    "Build",
+    "Released",
+    "Requires",
+    "macOS SDKs",
+    "iOS SDKs",
+    "watchOS SDKs",
+    "tvOS SDKs",
+    "Download",
+    "Release Notes",
+  ]
   return (
-    <table id="xcodes">
+    <table id="xcodes" style={{
+      margin: 0,
+      width: "100%"
+    }}>
       <tbody>
         <tr>
-          <th>Version</th>
-          <th>Release</th>
-          <th>Build</th>
-          <th>Released</th>
-          <th>Requires</th>
-          <th>macOS SDKs</th>
-          <th>iOS SDKs</th>
-          <th>watchOS SDKs</th>
-          <th>tvOS SDKs</th>
-          <th>Download</th>
-          <th>Release Notes</th>
+          {headings.map(heading => {
+            return <th style={{
+              fontWeight: 'bold'
+            }}>
+              {heading}
+            </th>
+          }) }
         </tr>
         {allReleasesJson.edges.slice(0,9).map(release => {
           return <XcodeTableRow data={release} />
