@@ -92,9 +92,13 @@ const SDKList = ({ sdks }) => {
 
 const XcodeTableRow = ({ data }) => {
   const { node } = data
+  console.log({ "version": node.version.number, "release": node.version })
+  const version = data.node.version.release.gm === true ? 'gm' : 'beta'
   return (
-    <tr className={`xcode ${data.node.version.release.gm === undefined ? 'beta' : 'gm'}`}>
-      <td>
+    <tr className={`xcode ${version}`}>
+      <td style={{
+        fontWeight: version === 'gm' ? 'bold' : 'regular'
+      }}>
         {node.name} {node.version.number}
       </td>
       <td>
@@ -148,7 +152,8 @@ const XcodeTableRender = ({ allReleasesJson }) => {
   return (
     <table id="xcodes" style={{
       margin: 0,
-      width: "100%"
+      width: "100%",
+      tableLayout:'fixed'
     }}>
       <tbody>
         <tr>

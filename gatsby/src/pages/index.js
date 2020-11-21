@@ -9,7 +9,8 @@ export default function Home() {
     <div style={{
       display: "flex",
       alignItems: "center",
-      flexDirection:"column"
+      flexDirection: "column",
+      fontFamily: 'sans-serif'
     }}>
       <Header />
       <Table />
