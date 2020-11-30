@@ -1,6 +1,7 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
 import MarkdownRenderer from "./MarkdownRenderer"
+import { isNil } from "lodash"
 
 const releaseJSONQuery = graphql`
   query MyQuery {
@@ -83,7 +84,7 @@ const SDKList = ({ sdks }) => {
     <ul style={{
       listStyle:"none"
     }}>
-      {sdks.map(({ build }) => {
+      {(sdks || []) .map(({ build }) => {
         return <li> {build}</li>
       })}
     </ul>
@@ -114,25 +115,39 @@ const XcodeTableRow = ({ data }) => {
         {node.requires}
       </td>
       <td>
-        <SDKList sdks={ node.sdks.macOS }/>
+        <SDKList sdks={ node?.sdks?.macOS }/>
       </td>
       <td>
-       <SDKList sdks={ node.sdks.iOS }/>
+       <SDKList sdks={ node?.sdks?.iOS }/>
       </td>
       <td>
-        <SDKList sdks={ node.sdks.watchOS }/>
+        <SDKList sdks={ node?.sdks?.watchOS }/>
       </td>
       <td>
-        <SDKList sdks={ node.sdks.tvOS }/>
+        <SDKList sdks={ node?.sdks?.tvOS }/>
       </td>
       <td>
-        <a href={node.links.download.url}>Downloads</a>
+      <ConditionallyRender
+          condition={node?.links?.download?.url}
+          element={(<a href={node?.links?.download?.url}>Downloads</a>)}
+        />
       </td>
       <td>
-        <a href={node.links.notes.url}>Release Notes</a>
+        <ConditionallyRender
+          condition={node?.links?.notes?.url}
+          element={(<a href={node?.links?.notes?.url}>Release Notes</a>)}
+        />
       </td>
     </tr>
   )
+}
+
+const ConditionallyRender = ({ condition, element }) => {
+  if (condition) {
+    return (element)
+  } else {
+    return (<> </>)
+  }
 }
 
 const XcodeTableRender = ({ allReleasesJson }) => {
@@ -146,8 +161,11 @@ const XcodeTableRender = ({ allReleasesJson }) => {
     "iOS SDKs",
     "watchOS SDKs",
     "tvOS SDKs",
+  ]
+
+  const linkedHeadings = [
     "Download",
-    "Release Notes",
+    "Release Notes"
   ]
   return (
     <table id="xcodes" style={{
@@ -156,16 +174,26 @@ const XcodeTableRender = ({ allReleasesJson }) => {
       tableLayout:'fixed'
     }}>
       <tbody>
-        <tr>
+        <tr> 
           {headings.map(heading => {
             return <th style={{
               fontWeight: 'bold'
             }}>
               {heading}
             </th>
-          }) }
+          })}
+
+          {linkedHeadings.map(heading => {
+            return <th style={{
+              fontWeight: 'bold'
+            }}>
+              <a name="ret-footer"></a>
+              {heading}
+              <a href="#footer">¹</a>
+            </th>
+          })}
         </tr>
-        {allReleasesJson.edges.slice(0,9).map(release => {
+        {allReleasesJson.edges.slice(0,500).map(release => {
           return <XcodeTableRow data={release} />
         })}
       </tbody>
